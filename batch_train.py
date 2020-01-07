@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.models import load_model
 from tensorflow.keras import regularizers
 import time
@@ -13,8 +13,6 @@ label_dict = np.load('label_dict.npy', allow_pickle='TRUE').item()
 os.chdir(pts_dynamic_abs)
 
 new_size = 350
-
-# hi there
 
 # model
 NAME = "ct-CNN"
