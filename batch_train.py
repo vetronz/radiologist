@@ -55,15 +55,15 @@ t_prop = 0.8
 # train_idx = idx[0:round(len_X*t_prop)]
 # val_idx = idx[round(len_X*t_prop):]
 
-# # def the val set
-X_test = []
-y_test = []
-for i in val_idx:
-    ct_id = 'ct_' + str(i)
-    img = np.load(ct_id + '.npy')
-    label = label_dict[ct_id]
-    X_test.append(img)
-    y_test.append(label)
+# # # def the val set
+# X_test = []
+# y_test = []
+# for i in val_idx:
+#     ct_id = 'ct_' + str(i)
+#     img = np.load(ct_id + '.npy')
+#     label = label_dict[ct_id]
+#     X_test.append(img)
+#     y_test.append(label)
 
 
 # define the batch params for the train set
