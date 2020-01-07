@@ -14,6 +14,8 @@ os.chdir(pts_dynamic_abs)
 
 new_size = 350
 
+# hi there
+
 # model
 NAME = "ct-CNN"
 model = Sequential()
