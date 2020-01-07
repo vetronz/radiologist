@@ -15,14 +15,15 @@ os.chdir(pts_dynamic_abs)
 new_size = 350
 
 # model
-reg_alpha = 0.03
+reg_alpha = 0.09
+drop_perc = 0.3
 NAME = "ct-CNN"
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(reg_alpha), input_shape=(new_size, new_size, 1)))
-model.add(Dropout(0.25))
+model.add(Dropout(drop_perc))
 model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(reg_alpha)))
 model.add(MaxPooling2D(pool_size=(2,2)))
-model.add(Dropout(0.25))
+model.add(Dropout(drop_perc))
 model.add(Flatten())
 model.add(Dense(1, activation='sigmoid'))
 
@@ -37,12 +38,12 @@ monitor = EarlyStopping(monitor='val_loss', min_delta=1e-1, patience=2, verbose=
 callback_l = [checkpoint, monitor]
 
 class_weight = {0: 1,
-                1: 3}
+                1: 2}
 
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
 # hard set len to limit dataset for debug
-len_X = 9000
+len_X = 12000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
