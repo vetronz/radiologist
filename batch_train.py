@@ -17,13 +17,26 @@ new_size = 350
 
 aug_perm = 10
 
-datagen = ImageDataGenerator(
-    featurewise_center=True,
-    featurewise_std_normalization=True,
-    rotation_range=20,
-    width_shift_range=0.2,
-    height_shift_range=0.1,
-    horizontal_flip=True)
+# datagen = ImageDataGenerator(
+#     featurewise_center=True,
+#     featurewise_std_normalization=True,
+#     rotation_range=20,
+#     width_shift_range=0.2,
+#     height_shift_range=0.1,
+#     horizontal_flip=True)
+
+class customDataGen(ImageDataGenerator):
+    def __init__(self, featurewise_center=True,
+        featurewise_std_normalization=True,
+        rotation_range=20,
+        width_shift_range=0.2,
+        height_shift_range=0.1,
+        horizontal_flip=True)
+
+    def standardize(self, x):
+    if self.featurewise_center:
+        x = ((x/255.) - 0.5) * 2.
+    return x
 
 # model
 reg_alpha = 0.18
@@ -152,7 +165,7 @@ print(f'\ntotal time: {t_tot}')
 dnn_dir = '/home/patrick/disp/dnn'
 os.chdir(dnn_dir)
 
-model.save('model_fit2.h5')  # creates a HDF5 file 'my_model.h5'
+model.save('batch_mod.h5')  # creates a HDF5 file 'my_model.h5'
 # returns a compiled model
 # identical to the previous one
 # model = load_model('my_model.h5')
