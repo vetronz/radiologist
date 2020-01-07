@@ -6,6 +6,7 @@ from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, Conv2D,
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.models import load_model
 from tensorflow.keras import regularizers
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import time
 
 pts_dynamic_abs = '/home/patrick/disp/data/pts_dynamic'
@@ -14,8 +15,18 @@ os.chdir(pts_dynamic_abs)
 
 new_size = 350
 
+aug_perm = 10
+
+datagen = ImageDataGenerator(
+    featurewise_center=True,
+    featurewise_std_normalization=True,
+    rotation_range=20,
+    width_shift_range=0.2,
+    height_shift_range=0.1,
+    horizontal_flip=True)
+
 # model
-reg_alpha = 0.09
+reg_alpha = 0.18
 drop_perc = 0.3
 NAME = "ct-CNN"
 model = Sequential()
@@ -43,7 +54,7 @@ class_weight = {0: 1,
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
 # hard set len to limit dataset for debug
-len_X = 12000
+len_X = 3000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
@@ -69,7 +80,7 @@ t_prop = 0.8
 
 
 # define the batch params for the train set
-bs = 2048
+bs = 512
 num_train_img = len(train_idx)
 # num_val_img = len(val_idx)
 num_batches = int(np.floor(num_train_img/bs))
@@ -92,8 +103,18 @@ for i in indexes:
     for j in train_batch_idx:
         ct_id = 'ct_' + str(j)
         # unaugmented
-        X_train.append(np.load(ct_id + '.npy'))
-        y_train.append(label_dict[ct_id])
+        # X_train.append(np.load(ct_id + '.npy'))
+        # y_train.append(label_dict[ct_id])
+        
+        # # augmented
+        img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
+        aug_img = datagen.flow(img)
+        aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
+
+        for k in aug_img_l:
+            X_train.append(k)
+            y_train.append(label_dict[ct_id])
+        
         time.sleep(0.02)
 
     X_test = []
@@ -120,7 +141,7 @@ for i in indexes:
 
     # fit model
     print('fitting model')
-    model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs, class_weight=class_weight)
+    model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs)
 
 time.sleep(1)
 
