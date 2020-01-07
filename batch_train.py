@@ -54,7 +54,7 @@ class_weight = {0: 1,
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
 # hard set len to limit dataset for debug
-len_X = 3000
+# len_X = 3000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
