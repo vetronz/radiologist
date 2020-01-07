@@ -80,9 +80,8 @@ t_start = time.time()
 for i in indexes:
     print(f'\nbatch: {i} of: {len(indexes)}\n')
     batch_l = train_idx[(i*bs):(i+1)*bs]
-    train_batch_idx = batch_l[0:round(batch_l*t_prop)]
-    val_batch_idx = batch_l[round(batch_l*t_prop):]
-
+    train_batch_idx = batch_l[0:round(len(batch_l)*t_prop)]
+    val_batch_idx = batch_l[round(len(batch_l)*t_prop):]
     print(batch_l)
     time.sleep(0.02)
 
