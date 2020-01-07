@@ -17,26 +17,13 @@ new_size = 350
 
 aug_perm = 10
 
-# datagen = ImageDataGenerator(
-#     featurewise_center=True,
-#     featurewise_std_normalization=True,
-#     rotation_range=20,
-#     width_shift_range=0.2,
-#     height_shift_range=0.1,
-#     horizontal_flip=True)
-
-class customDataGen(ImageDataGenerator):
-    def __init__(self, featurewise_center=True,
-        featurewise_std_normalization=True,
-        rotation_range=20,
-        width_shift_range=0.2,
-        height_shift_range=0.1,
-        horizontal_flip=True)
-
-    def standardize(self, x):
-    if self.featurewise_center:
-        x = ((x/255.) - 0.5) * 2.
-    return x
+datagen = ImageDataGenerator(
+    featurewise_center=False,
+    featurewise_std_normalization=False,
+    rotation_range=20,
+    width_shift_range=0.2,
+    height_shift_range=0.1,
+    horizontal_flip=True)
 
 # model
 reg_alpha = 0.18
