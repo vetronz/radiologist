@@ -33,7 +33,7 @@ checkpoint = ModelCheckpoint('/home/patrick/disp/dnn/weights_best.hdf5', monitor
 
 monitor = EarlyStopping(monitor='val_loss', min_delta=1e-1, patience=2, verbose=1, mode='auto', restore_best_weights=True)
 
-callback = checkpoint
+callback_l = [checkpoint, monitor]
 
 class_weight = {0: 1,
                 1: 4}
@@ -41,7 +41,7 @@ class_weight = {0: 1,
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
 # hard set len to limit dataset for debug
-len_X = 5000
+len_X = 9000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
@@ -67,7 +67,7 @@ t_prop = 0.8
 
 
 # define the batch params for the train set
-bs = 1024
+bs = 2048
 num_train_img = len(train_idx)
 # num_val_img = len(val_idx)
 num_batches = int(np.floor(num_train_img/bs))
@@ -118,7 +118,7 @@ for i in indexes:
 
     # fit model
     print('fitting model')
-    model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=[callback], epochs=num_epochs, class_weight=class_weight)
+    model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs, class_weight=class_weight)
 
 time.sleep(1)
 
