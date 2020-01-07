@@ -15,11 +15,12 @@ os.chdir(pts_dynamic_abs)
 new_size = 350
 
 # model
+reg_alpha = 0.03
 NAME = "ct-CNN"
 model = Sequential()
-model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(0.03), input_shape=(new_size, new_size, 1)))
+model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(reg_alpha), input_shape=(new_size, new_size, 1)))
 model.add(Dropout(0.25))
-model.add(Conv2D(32, kernel_size=(3,3), activation='relu'))
+model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(reg_alpha)))
 model.add(MaxPooling2D(pool_size=(2,2)))
 model.add(Dropout(0.25))
 model.add(Flatten())
@@ -36,7 +37,7 @@ monitor = EarlyStopping(monitor='val_loss', min_delta=1e-1, patience=2, verbose=
 callback_l = [checkpoint, monitor]
 
 class_weight = {0: 1,
-                1: 4}
+                1: 3}
 
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
@@ -72,7 +73,7 @@ num_train_img = len(train_idx)
 # num_val_img = len(val_idx)
 num_batches = int(np.floor(num_train_img/bs))
 print('\nnum batches: '+str(num_batches))
-num_epochs = 2
+num_epochs = 3
 
 indexes = np.arange(num_batches)
 
