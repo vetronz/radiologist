@@ -31,8 +31,11 @@ model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
-monitor = EarlyStopping(monitor='val_loss', min_delta=1e-1, patience=2, verbose=1, mode='auto',
-        restore_best_weights=True)
+checkpoint = ModelCheckpoint('/home/patrick/Code/Keras/ct_classifier/dnn/weights_best.hdf5', monitor='accuracy', verbose=1, save_best_only=True, mode='max')
+
+monitor = EarlyStopping(monitor='val_loss', min_delta=1e-1, patience=2, verbose=1, mode='auto', restore_best_weights=True)
+
+callback = checkpoint
 
 class_weight = {0: 1,
                 1: 4}
@@ -40,19 +43,21 @@ class_weight = {0: 1,
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
 # hard set len to limit dataset for debug
-# len_X = 3000
+len_X = 3000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
 np.random.seed(42)
 np.random.shuffle(idx)
 
+train_idx = idx[0:round(len_X)]
+
 # split 80 20 %
 t_prop = 0.8
-train_idx = idx[0:round(len_X*t_prop)]
-val_idx = idx[round(len_X*t_prop):]
+# train_idx = idx[0:round(len_X*t_prop)]
+# val_idx = idx[round(len_X*t_prop):]
 
-# def the val set
+# # def the val set
 X_test = []
 y_test = []
 for i in val_idx:
@@ -62,18 +67,14 @@ for i in val_idx:
     X_test.append(img)
     y_test.append(label)
 
-X_test = np.array(X_test)
-y_test = np.array(y_test)
-X_test = X_test.reshape(-1, new_size, new_size, 1)
-
 
 # define the batch params for the train set
-bs = 512
+bs = 1024
 num_train_img = len(train_idx)
-num_val_img = len(val_idx)
+# num_val_img = len(val_idx)
 num_batches = int(np.floor(num_train_img/bs))
 print('\nnum batches: '+str(num_batches))
-num_epochs = 5
+num_epochs = 2
 
 indexes = np.arange(num_batches)
 
@@ -81,31 +82,46 @@ t_start = time.time()
 for i in indexes:
     print(f'\nbatch: {i} of: {len(indexes)}\n')
     batch_l = train_idx[(i*bs):(i+1)*bs]
+    train_batch_idx = batch_l[0:round(batch_l*t_prop)]
+    val_batch_idx = batch_l[round(batch_l*t_prop):]
+
     print(batch_l)
     time.sleep(0.02)
+
     X_train = []
     y_train = []
-    for j in batch_l:
+    for j in train_batch_idx:
         ct_id = 'ct_' + str(j)
         # unaugmented
         X_train.append(np.load(ct_id + '.npy'))
         y_train.append(label_dict[ct_id])
         time.sleep(0.02)
 
+    X_test = []
+    y_test = []
+    for j in val_batch_idx:
+        ct_id = 'ct_' + str(j)
+        # unaugmented
+        X_test.append(np.load(ct_id + '.npy'))
+        y_test.append(label_dict[ct_id])
+        time.sleep(0.02)
+
     # convert from list to array
     X_train = np.array(X_train)
     y_train = np.array(y_train)
-    # reshape for conv net
     X_train = X_train.reshape(-1, new_size, new_size, 1)
 
+    X_test = np.array(X_test)
+    y_test = np.array(y_test)
+    X_test = X_test.reshape(-1, new_size, new_size, 1)
+
     print(f'\n X_train shape:{X_train.shape}\n')
+    print(f'\n X_test shape:{X_test.shape}\n')
     time.sleep(0.01)
 
     # fit model
     print('fitting model')
-    model.fit(X_train,y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=
-    [monitor], epochs=num_epochs, class_weight=class_weight)
-
+    model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=[callback], epochs=num_epochs, class_weight=class_weight)
 
 time.sleep(1)
 
