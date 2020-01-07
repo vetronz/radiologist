@@ -29,7 +29,7 @@ model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
-checkpoint = ModelCheckpoint('/home/patrick/Code/Keras/ct_classifier/dnn/weights_best.hdf5', monitor='accuracy', verbose=1, save_best_only=True, mode='max')
+checkpoint = ModelCheckpoint('/home/patrick/disp/dnn/weights_best.hdf5', monitor='accuracy', verbose=1, save_best_only=True, mode='max')
 
 monitor = EarlyStopping(monitor='val_loss', min_delta=1e-1, patience=2, verbose=1, mode='auto', restore_best_weights=True)
 
