@@ -107,6 +107,7 @@ for i in indexes:
         aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
         for k in aug_img_l:
             print(type(k))
+            print(k.shape)
             X_train.append(k)
             y_train.append(label_dict[ct_id])
         
