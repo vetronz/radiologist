@@ -106,7 +106,7 @@ for i in indexes:
         ct_id = 'ct_' + str(j)
         if label_dict[ct_id] == 1:
             # augment
-            print(f'augmenting img: {ct_id}')
+            # print(f'augmenting img: {ct_id}')
             img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
             aug_img = datagen.flow(img)
             aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
@@ -117,9 +117,9 @@ for i in indexes:
                 time.sleep(0.01)
         else:
             # unaugmented
-            print(f'adding non aug img: {ct_id}')
+            # print(f'adding non aug img: {ct_id}')
             img = np.load(ct_id + '.npy')
-            print(img.shape)
+            # print(img.shape)
             X_train.append(img)
             y_train.append(label_dict[ct_id])
             time.sleep(0.01)
