@@ -79,7 +79,7 @@ t_prop = 0.5
 #     y_test.append(label)
 
 # define the batch params for the train set
-bs = 32
+bs = 256
 num_train_img = len(train_idx)
 # num_val_img = len(val_idx)
 num_batches = int(np.floor(num_train_img/bs))
