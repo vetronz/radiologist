@@ -114,7 +114,7 @@ for i in indexes:
                 y_train.append(label_dict[ct_id])
         else:
             # unaugmented
-            img = np.load(ct_id + '.npy'
+            img = np.load(ct_id + '.npy')
             X_train.append(img)
             y_train.append(label_dict[ct_id])
         time.sleep(1)
