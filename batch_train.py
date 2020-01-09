@@ -101,45 +101,48 @@ for i in indexes:
     y_train = []
     for j in train_batch_idx:
         ct_id = 'ct_' + str(j)
-        
-        if label_dict[ct_id] == 1:
-            # augmented
-            img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
-            aug_img = datagen.flow(img)
-            aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
-
-            for k in aug_img_l:
-                print(f'\naug img shape: {k.shape()}')
-                X_train.append(k)
-                y_train.append(label_dict[ct_id])
-            
-            time.sleep(0.02)
-        else:
-            # unaugmented
-            img = np.load(ct_id + '.npy'
-            print(f'\nimg shape: {img}')
-            X_train.append(img))
+        img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
+        aug_img = datagen.flow(img)
+        aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
+        for k in aug_img_l:
+            X_train.append(k)
             y_train.append(label_dict[ct_id])
-        time.sleep(1)
+        # if label_dict[ct_id] == 1:
+        #     # augmented
+        #     img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
+        #     aug_img = datagen.flow(img)
+        #     aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
 
-    # X_test = []
-    # y_test = []
-    # for j in val_batch_idx:
-    #     ct_id = 'ct_' + str(j)
-    #     # unaugmented
-    #     X_test.append(np.load(ct_id + '.npy'))
-    #     y_test.append(label_dict[ct_id])
-    #     time.sleep(0.02)
+        #     for k in aug_img_l:
+        #         print(f'\naug img shape: {k.shape()}')
+        #         X_train.append(k)
+        #         y_train.append(label_dict[ct_id])
+            
+        #     time.sleep(0.02)
+        # else:
+        #     # unaugmented
+        #     img = np.load(ct_id + '.npy'
+        #     X_train.append(img))
+        #     y_train.append(label_dict[ct_id])
+        # time.sleep(1)
+
+    X_test = []
+    y_test = []
+    for j in val_batch_idx:
+        ct_id = 'ct_' + str(j)
+        # unaugmented
+        X_test.append(np.load(ct_id + '.npy'))
+        y_test.append(label_dict[ct_id])
+        time.sleep(0.02)
 
     # convert from list to array
-    # X_train_debug
-    
-    print('pre brick')
     X_train = np.array(X_train)
-    print('post brick')
     y_train = np.array(y_train)
     X_train = X_train.reshape(-1, new_size, new_size, 1)
 
+    print(f'\nX_train shape: {X_train.shape()}')
+    print(f'\ny_train shape: {y_train.shape()}')
+    time.sleep(1)
     X_test = np.array(X_test)
     y_test = np.array(y_test)
     X_test = X_test.reshape(-1, new_size, new_size, 1)
