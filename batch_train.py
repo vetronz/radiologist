@@ -140,8 +140,9 @@ for i in indexes:
     y_train = np.array(y_train)
     X_train = X_train.reshape(-1, new_size, new_size, 1)
 
-    print(f'\nX_train shape: {X_train.shape()}')
-    print(f'\ny_train shape: {y_train.shape()}')
+    print(f'\nX_train shape: {X_train.shape}')
+    print(f'\ny_train shape: {y_train.shape}')
+
     time.sleep(1)
     X_test = np.array(X_test)
     y_test = np.array(y_test)
