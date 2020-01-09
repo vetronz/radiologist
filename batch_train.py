@@ -42,7 +42,7 @@ model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
 
-checkpoint = ModelCheckpoint('/home/patrick/disp/dnn/weights_best.hdf5', monitor='accuracy', verbose=1, save_best_only=True, mode='max')
+checkpoint = ModelCheckpoint('/home/patrick/disp/dnn/weights_best.hdf5', monitor='val_loss', verbose=1, save_best_only=True, mode='max')
 
 monitor = EarlyStopping(monitor='val_loss', min_delta=1e-1, patience=2, verbose=1, mode='auto', restore_best_weights=True)
 
@@ -54,7 +54,7 @@ class_weight = {0: 1,
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
 # hard set len to limit dataset for debug
-# len_X = 3000
+len_X = 3000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
@@ -64,7 +64,7 @@ np.random.shuffle(idx)
 train_idx = idx[0:round(len_X)]
 
 # split 80 20 %
-t_prop = 0.8
+t_prop = 0.6
 # train_idx = idx[0:round(len_X*t_prop)]
 # val_idx = idx[round(len_X*t_prop):]
 
@@ -78,14 +78,13 @@ t_prop = 0.8
 #     X_test.append(img)
 #     y_test.append(label)
 
-
 # define the batch params for the train set
 bs = 512
 num_train_img = len(train_idx)
 # num_val_img = len(val_idx)
 num_batches = int(np.floor(num_train_img/bs))
 print('\nnum batches: '+str(num_batches))
-num_epochs = 3
+num_epochs = 1
 
 indexes = np.arange(num_batches)
 
@@ -95,28 +94,30 @@ for i in indexes:
     batch_l = train_idx[(i*bs):(i+1)*bs]
     train_batch_idx = batch_l[0:round(len(batch_l)*t_prop)]
     val_batch_idx = batch_l[round(len(batch_l)*t_prop):]
-    print(batch_l)
+    # print(batch_l)
     time.sleep(0.02)
 
     X_train = []
     y_train = []
     for j in train_batch_idx:
         ct_id = 'ct_' + str(j)
-        # unaugmented
-        # X_train.append(np.load(ct_id + '.npy'))
-        # y_train.append(label_dict[ct_id])
         
-        # # augmented
-        img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
-        aug_img = datagen.flow(img)
-        aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
+        if label_dict[ct_id] == 1:
+            # augmented
+            img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
+            aug_img = datagen.flow(img)
+            aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
 
-        for k in aug_img_l:
-            X_train.append(k)
+            for k in aug_img_l:
+                X_train.append(k)
+                y_train.append(label_dict[ct_id])
+            
+            time.sleep(0.02)
+        else:
+            # unaugmented
+            X_train.append(np.load(ct_id + '.npy'))
             y_train.append(label_dict[ct_id])
         
-        time.sleep(0.02)
-
     X_test = []
     y_test = []
     for j in val_batch_idx:
@@ -141,7 +142,7 @@ for i in indexes:
 
     # fit model
     print('fitting model')
-    model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs)
+    model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs, class_weight)
 
 time.sleep(1)
 
