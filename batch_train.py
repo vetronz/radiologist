@@ -99,39 +99,26 @@ for i in indexes:
 
     X_train = []
     y_train = []
-    for j in train_batch_idx:
-        ct_id = 'ct_' + str(j)
-        
-        img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
-        aug_img = datagen.flow(img)
-        aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
-        for k in aug_img_l:
-            print(type(k))
-            print(k.shape)
-            X_train.append(k)
-            y_train.append(label_dict[ct_id])
-        
-        # if label_dict[ct_id] == 1:
-        #     # augmented
-        #     img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
-        #     aug_img = datagen.flow(img)
-        #     aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
-
-        #     for k in aug_img_l:
-        #         print(f'\naug img shape: {k.shape()}')
-        #         X_train.append(k)
-        #         y_train.append(label_dict[ct_id])
-            
-        #     time.sleep(0.02)
-        # else:
-        #     # unaugmented
-        #     img = np.load(ct_id + '.npy'
-        #     X_train.append(img))
-        #     y_train.append(label_dict[ct_id])
-        # time.sleep(1)
-
     X_test = []
     y_test = []
+
+    for j in train_batch_idx:
+        ct_id = 'ct_' + str(j)
+        if label_dict[ct_id] == 1:
+            # augment
+            img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
+            aug_img = datagen.flow(img)
+            aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
+            for k in aug_img_l:
+                X_train.append(k)
+                y_train.append(label_dict[ct_id])
+        else:
+            # unaugmented
+            img = np.load(ct_id + '.npy'
+            X_train.append(img))
+            y_train.append(label_dict[ct_id])
+        time.sleep(1)
+        
     for j in val_batch_idx:
         ct_id = 'ct_' + str(j)
         # unaugmented
