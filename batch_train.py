@@ -142,7 +142,7 @@ for i in indexes:
 
     # fit model
     print('fitting model')
-    model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs, class_weight)
+    model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs, class_weight=class_weight)
 
 time.sleep(1)
 
