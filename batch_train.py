@@ -15,7 +15,7 @@ os.chdir(pts_dynamic_abs)
 
 new_size = 350
 
-aug_perm = 10
+aug_perm = 20
 
 datagen = ImageDataGenerator(
     featurewise_center=False,
@@ -54,7 +54,7 @@ class_weight = {0: 1,
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
 # hard set len to limit dataset for debug
-len_X = 3000
+len_X = 2000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
@@ -64,7 +64,7 @@ np.random.shuffle(idx)
 train_idx = idx[0:round(len_X)]
 
 # split 80 20 %
-t_prop = 0.6
+t_prop = 0.5
 # train_idx = idx[0:round(len_X*t_prop)]
 # val_idx = idx[round(len_X*t_prop):]
 
@@ -95,7 +95,7 @@ for i in indexes:
     train_batch_idx = batch_l[0:round(len(batch_l)*t_prop)]
     val_batch_idx = batch_l[round(len(batch_l)*t_prop):]
     # print(batch_l)
-    time.sleep(0.02)
+    time.sleep(0.01)
 
     X_train = []
     y_train = []
@@ -112,9 +112,9 @@ for i in indexes:
             aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
             for k in aug_img_l:
                 k = k.reshape(new_size, new_size)
-                print(k.shape)
                 X_train.append(k)
                 y_train.append(label_dict[ct_id])
+                time.sleep(0.01)
         else:
             # unaugmented
             print(f'adding non aug img: {ct_id}')
@@ -122,14 +122,14 @@ for i in indexes:
             print(img.shape)
             X_train.append(img)
             y_train.append(label_dict[ct_id])
-        time.sleep(1)
+            time.sleep(0.01)
         
     for j in val_batch_idx:
         ct_id = 'ct_' + str(j)
         # unaugmented
         X_test.append(np.load(ct_id + '.npy'))
         y_test.append(label_dict[ct_id])
-        time.sleep(0.02)
+        time.sleep(0.01)
 
     # convert from list to array
     X_train = np.array(X_train)
