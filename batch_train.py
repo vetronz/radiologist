@@ -101,12 +101,15 @@ for i in indexes:
     y_train = []
     for j in train_batch_idx:
         ct_id = 'ct_' + str(j)
+        
         img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
         aug_img = datagen.flow(img)
         aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
         for k in aug_img_l:
+            print(type(k))
             X_train.append(k)
             y_train.append(label_dict[ct_id])
+        
         # if label_dict[ct_id] == 1:
         #     # augmented
         #     img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
@@ -148,8 +151,8 @@ for i in indexes:
     y_test = np.array(y_test)
     X_test = X_test.reshape(-1, new_size, new_size, 1)
 
-    print(f'\n X_train shape:{X_train.shape}\n')
     print(f'\n X_test shape:{X_test.shape}\n')
+    print(f'\n y_test shape:{y_test.shape}\n')
     time.sleep(0.01)
 
     # fit model
