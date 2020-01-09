@@ -79,7 +79,7 @@ t_prop = 0.6
 #     y_test.append(label)
 
 # define the batch params for the train set
-bs = 512
+bs = 32
 num_train_img = len(train_idx)
 # num_val_img = len(val_idx)
 num_batches = int(np.floor(num_train_img/bs))
@@ -118,6 +118,7 @@ for i in indexes:
             # unaugmented
             print(f'adding non aug img: {ct_id}')
             img = np.load(ct_id + '.npy')
+            print(img.shape)
             X_train.append(img)
             y_train.append(label_dict[ct_id])
         time.sleep(1)
