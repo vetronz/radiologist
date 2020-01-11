@@ -54,7 +54,7 @@ class_weight = {0: 1,
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
 # hard set len to limit dataset for debug
-len_X = 18000
+len_X = 8000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
@@ -150,7 +150,7 @@ for i in indexes:
 
     # fit model
     print('fitting model')
-    model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs, class_weight=class_weight)
+    mod_hist = model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs, class_weight=class_weight)
 
 time.sleep(1)
 
@@ -161,8 +161,9 @@ print(f'\ntotal time: {t_tot}')
 dnn_dir = '/home/patrick/disp/dnn'
 os.chdir(dnn_dir)
 
-model.save('batch_mod.h5')  # creates a HDF5 file 'my_model.h5'
-# returns a compiled model
-# identical to the previous one
+ # creates a HDF5 file 'my_model.h5'
+model.save('batch_mod.h5')
 # model = load_model('my_model.h5')
 
+with open('/mod_hist_dict', 'wb') as f:
+    pickle.dump(mod_hist.history, f)
