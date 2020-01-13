@@ -16,7 +16,7 @@ os.chdir(pts_dynamic_abs)
 
 new_size = 350
 
-aug_perm = 20
+aug_perm = 40
 
 datagen = ImageDataGenerator(
     featurewise_center=False,
@@ -80,11 +80,11 @@ t_prop = 0.5
 #     y_test.append(label)
 
 # define the batch params for the train set
-bs = 4096
+bs = 8192
 num_train_img = len(train_idx)
 num_batches = int(np.floor(num_train_img/bs))
 print('\nnum batches: '+str(num_batches))
-num_epochs = 3
+num_epochs = 1
 
 indexes = np.arange(num_batches)
 
