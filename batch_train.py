@@ -79,14 +79,15 @@ t_prop = 0.5
 #     y_test.append(label)
 
 # define the batch params for the train set
-bs = 1024
+bs = 2048
 num_train_img = len(train_idx)
-# num_val_img = len(val_idx)
 num_batches = int(np.floor(num_train_img/bs))
 print('\nnum batches: '+str(num_batches))
 num_epochs = 3
 
 indexes = np.arange(num_batches)
+
+mod_hist_dict = {}
 
 t_start = time.time()
 for i in indexes:
@@ -151,6 +152,7 @@ for i in indexes:
     # fit model
     print('fitting model')
     mod_hist = model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs)
+    mod_hist_dict[i] = mod_hist.history
 
 time.sleep(1)
 
@@ -165,6 +167,5 @@ os.chdir(dnn_dir)
 model.save('batch_mod.h5')
 # model = load_model('my_model.h5')
 
-
-# with open('/mod_hist_dict', 'wb') as f:
-#     pickle.dump(mod_hist.history, f)
+with open('/mod_hist_dict', 'wb') as f:
+    pickle.dump(mod_his_dict, f)
