@@ -55,7 +55,7 @@ class_weight = {0: 1,
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
 # hard set len to limit dataset for debug
-len_X = 8000
+# len_X = 8000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
@@ -80,7 +80,7 @@ t_prop = 0.5
 #     y_test.append(label)
 
 # define the batch params for the train set
-bs = 2048
+bs = 4096
 num_train_img = len(train_idx)
 num_batches = int(np.floor(num_train_img/bs))
 print('\nnum batches: '+str(num_batches))
