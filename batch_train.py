@@ -8,6 +8,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras import regularizers
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import time
+import pickle
 
 pts_dynamic_abs = '/root/disp/pts_dynamic'
 label_dict = np.load('label_dict.npy', allow_pickle='TRUE').item()
@@ -26,8 +27,8 @@ datagen = ImageDataGenerator(
     horizontal_flip=True)
 
 # model
-reg_alpha = 0.18
-drop_perc = 0.3
+reg_alpha = 0.1
+drop_perc = 0.2
 NAME = "ct-CNN"
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(reg_alpha), input_shape=(new_size, new_size, 1)))
