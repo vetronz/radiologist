@@ -35,7 +35,7 @@ os.chdir(pts_dynamic_abs)
 new_size = 350
 
 # model
-num_epochs = 2
+num_epochs = 5
 reg_alpha = 0.1
 drop_perc = 0.2
 NAME = "ct-CNN"
@@ -61,7 +61,7 @@ callback_l = [checkpoint, monitor]
 # data partitioning
 t_prop = 0.8
 # construct array 0 to length of num imgs
-len_X = 500
+len_X = 5000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
@@ -99,4 +99,5 @@ model.save('batch_mod.h5')
 os.chdir(rad_abs)
 with open('hist_dict.pkl', 'wb') as f:
     pickle.dump(mod.history, f)
-    
+# with open('hist_dict.pkl', 'rb') as f:
+#     pickle.load(f)
