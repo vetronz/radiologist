@@ -97,6 +97,6 @@ model.save('batch_mod.h5')
 # model = load_model('my_model.h5')
 
 os.chdir(rad_abs)
-with open('/mod_hist', 'wb') as f:
+with open('hist_dict.pkl', 'wb') as f:
     pickle.dump(mod.history, f)
     
