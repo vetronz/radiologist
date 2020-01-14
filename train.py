@@ -28,13 +28,14 @@ def construct_data(index_list):
     return X, y
 
 pts_dynamic_abs = '/root/disp/pts_dynamic'
+rad_abs = '/root/radiologist'
 label_dict = np.load('label_dict.npy', allow_pickle='TRUE').item()
 os.chdir(pts_dynamic_abs)
 
 new_size = 350
 
 # model
-num_epochs = 1
+num_epochs = 2
 reg_alpha = 0.1
 drop_perc = 0.2
 NAME = "ct-CNN"
@@ -60,15 +61,15 @@ callback_l = [checkpoint, monitor]
 # data partitioning
 t_prop = 0.8
 # construct array 0 to length of num imgs
-len_X = 5000
+len_X = 500
 idx = np.arange(0, len_X)
 
 # inplace shuffle
 np.random.seed(42)
 np.random.shuffle(idx)
 
-train_idx = idx[0:round(len_X)*t_prop]
-val_idx = idx[round(len_X)*t_prop:]
+train_idx = idx[0:round(len_X*t_prop)]
+val_idx = idx[round(len_X*t_prop):]
 
 # calling constructor
 X_train, y_train = construct_data(train_idx)
@@ -80,7 +81,7 @@ time.sleep(0.01)
 
 # fit model
 print('fitting model')
-model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs)
+mod = model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs)
 
 # calling time
 time.sleep(1)
@@ -95,6 +96,7 @@ os.chdir(dnn_dir)
 model.save('batch_mod.h5')
 # model = load_model('my_model.h5')
 
-# with open('/mod_hist_dict', 'wb') as f:
-#     pickle.dump(mod_hist_dict, f)
+os.chdir(rad_abs)
+with open('/mod_hist', 'wb') as f:
+    pickle.dump(mod.history, f)
     
