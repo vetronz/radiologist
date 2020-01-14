@@ -61,7 +61,7 @@ callback_l = [checkpoint, monitor]
 # data partitioning
 t_prop = 0.8
 # construct array 0 to length of num imgs
-len_X = 5000
+len_X = 35000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
