@@ -16,7 +16,7 @@ os.chdir(pts_dynamic_abs)
 
 new_size = 350
 
-aug_perm = 40
+aug_perm = 20
 
 datagen = ImageDataGenerator(
     featurewise_center=False,
@@ -55,7 +55,7 @@ class_weight = {0: 1,
 # construct array 0 to length of num imgs
 len_X = len(os.listdir(pts_dynamic_abs))
 # hard set len to limit dataset for debug
-# len_X = 8000
+len_X = 8000
 idx = np.arange(0, len_X)
 
 # inplace shuffle
@@ -80,7 +80,7 @@ t_prop = 0.5
 #     y_test.append(label)
 
 # define the batch params for the train set
-bs = 8192
+bs = 4096
 num_train_img = len(train_idx)
 num_batches = int(np.floor(num_train_img/bs))
 print('\nnum batches: '+str(num_batches))
@@ -106,25 +106,32 @@ for i in indexes:
 
     for j in train_batch_idx:
         ct_id = 'ct_' + str(j)
-        if label_dict[ct_id] == 1:
-            # augment
-            # print(f'augmenting img: {ct_id}')
-            img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
-            aug_img = datagen.flow(img)
-            aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
-            for k in aug_img_l:
-                k = k.reshape(new_size, new_size)
-                X_train.append(k)
-                y_train.append(label_dict[ct_id])
-                time.sleep(0.01)
-        else:
-            # unaugmented
-            # print(f'adding non aug img: {ct_id}')
-            img = np.load(ct_id + '.npy')
-            # print(img.shape)
-            X_train.append(img)
+        img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
+        aug_img = datagen.flow(img)
+        aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
+        for k in aug_img_l:
+            k = k.reshape(new_size, new_size)
+            X_train.append(k)
             y_train.append(label_dict[ct_id])
             time.sleep(0.01)
+        
+        # if label_dict[ct_id] == 1:
+        #     # augment
+        #     # print(f'augmenting img: {ct_id}')
+        #     img = np.load(ct_id + '.npy').reshape(1, new_size, new_size, 1)
+        #     aug_img = datagen.flow(img)
+        #     aug_img_l = [next(aug_img)[0].astype(np.uint8) for i in range(aug_perm)]
+        #     for k in aug_img_l:
+        #         k = k.reshape(new_size, new_size)
+        #         X_train.append(k)
+        #         y_train.append(label_dict[ct_id])
+        #         time.sleep(0.01)
+        # else:
+        #     # unaugmented
+        #     img = np.load(ct_id + '.npy')
+        #     X_train.append(img)
+        #     y_train.append(label_dict[ct_id])
+        #     time.sleep(0.01)
         
     for j in val_batch_idx:
         ct_id = 'ct_' + str(j)
@@ -169,4 +176,5 @@ model.save('batch_mod.h5')
 # model = load_model('my_model.h5')
 
 with open('/mod_hist_dict', 'wb') as f:
-    pickle.dump(mod_his_dict, f)
+    pickle.dump(mod_hist_dict, f)
+    
