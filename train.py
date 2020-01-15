@@ -34,36 +34,28 @@ os.chdir(pts_dynamic_abs)
 
 new_size = 350
 
-# model
-num_epochs = 1
-reg_alpha = 0
-drop_perc = 0
-NAME = "ct-CNN"
-model = Sequential()
-model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(reg_alpha), input_shape=(new_size, new_size, 1)))
-model.add(Dropout(drop_perc))
-model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(reg_alpha)))
-model.add(MaxPooling2D(pool_size=(2,2)))
-model.add(Dropout(drop_perc))
-model.add(Flatten())
-model.add(Dense(1, activation='sigmoid'))
+def define_model(reg_alpha, drop_perc):
+    model = Sequential()
+    model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(reg_alpha), input_shape=(new_size, new_size, 1)))
+    model.add(Dropout(drop_perc))
+    model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(reg_alpha)))
+    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(Dropout(drop_perc))
+    model.add(Flatten())
+    model.add(Dense(1, activation='sigmoid'))
 
-model.compile(loss='binary_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy',
+                optimizer='adam',
+                metrics=['accuracy'])
+    return model
+
+
 
 checkpoint = ModelCheckpoint('/root/radiologist/dnn/weights_best.hdf5', monitor='val_loss', verbose=1, save_best_only=True, mode='max')
 
 monitor = EarlyStopping(monitor='val_loss', min_delta=1e-1, patience=2, verbose=1, mode='auto', restore_best_weights=True)
 
 callback_l = [checkpoint, monitor]
-
-# data partitioning
-# t_prop = 0.8
-frac = 100
-l = np.arange(1,frac)
-t_prop_l = [round(i*(frac/100), 2) for i in l]
-# t_prop_l = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
 # construct array 0 to length of num imgs
 len_data = 2500
@@ -73,14 +65,30 @@ idx = np.arange(0, len_data)
 np.random.seed(42)
 np.random.shuffle(idx)
 
+# data partitioning
+t_prop = 0.8
+
+train_idx = idx[0:round(len_data*t_prop)]
+val_idx = idx[round(len_data*t_prop):]
+
+len_train = len(train_idx)
+
+X_test, y_test = construct_data(val_idx)
+
+
+# frac = 100
+# l = np.arange(1,frac)
+# t_prop_l = [round(i*(frac/100), 2) for i in l]
+t_prop_l = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+
+
 mod_l = []
 for count, prop in enumerate(t_prop_l):
-    train_idx = idx[0:int(round(len_data*prop))]
-    # val_idx = idx[round(len_data*prop):]
+    model = define_model(0, 0)
+    train_sub = idx[0:round(len_train*prop)]
 
     # calling constructor
-    X_train, y_train = construct_data(train_idx)
-    # X_test, y_test = construct_data(val_idx)
+    X_train, y_train = construct_data(train_sub)
 
     # start gun
     t_start = time.time()
@@ -89,8 +97,8 @@ for count, prop in enumerate(t_prop_l):
     # fit model
     print('fitting model')
     
-    # mod = model.fit(X_train, y_train, batch_size=32, verbose=1, callbacks=callback_l, epochs=num_epochs, validation_data=(X_test, y_test))
-    mod = model.fit(X_train, y_train, batch_size=32, verbose=1, callbacks=callback_l, epochs=num_epochs, validation_split = 0.5)
+    mod = model.fit(X_train, y_train, batch_size=32, verbose=1, callbacks=callback_l, epochs=num_epochs, validation_data=(X_test, y_test))
+    # mod = model.fit(X_train, y_train, batch_size=32, verbose=1, callbacks=callback_l, epochs=num_epochs, validation_split = 0.5)
 
     mod_l.append(mod.history)
 
