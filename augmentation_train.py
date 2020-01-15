@@ -88,7 +88,7 @@ bs = 64
 num_epochs = 1
 
 # construct array 0 to length of num imgs
-len_data = 2500
+len_data = 5000
 idx = np.arange(0, len_data)
 
 # inplace shuffle
@@ -96,7 +96,7 @@ np.random.seed(42)
 np.random.shuffle(idx)
 
 # data partitioning
-t_prop = 0.8
+t_prop = 0.7
 
 train_idx = idx[0:round(len_data*t_prop)]
 val_idx = idx[round(len_data*t_prop):]
