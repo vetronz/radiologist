@@ -91,6 +91,11 @@ num_epochs = 1
 # construct array 0 to length of num imgs
 # len_data = 5000
 len_data = pts_dynamic_abs
+print(len_data)
+time.sleep(2)
+print('gods speed')
+time.sleep(2)
+print('once more into the breach, dear friends.')
 idx = np.arange(0, len_data)
 
 # inplace shuffle
