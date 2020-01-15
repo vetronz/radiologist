@@ -75,13 +75,11 @@ len_train = len(train_idx)
 
 X_test, y_test = construct_data(val_idx)
 
+frac = 100
+t_prop_l = np.arange(1,frac)/100
+# t_prop_l = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
-# frac = 100
-# l = np.arange(1,frac)
-# t_prop_l = [round(i*(frac/100), 2) for i in l]
-t_prop_l = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-
-
+num_epochs = 1
 mod_l = []
 for count, prop in enumerate(t_prop_l):
     model = define_model(0, 0)
