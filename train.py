@@ -23,7 +23,7 @@ def construct_data(index_list):
     y = np.array(y)
     X = X.reshape(-1, new_size, new_size, 1)
     time.sleep(0.01)
-    print(f'\n X shape:{X.shape}\n')
+    print(f'\n X shape:{X.shape}')
     print(f'\n y shape:{y.shape}\n')
     return X, y
 
@@ -73,11 +73,11 @@ np.random.shuffle(idx)
 mod_l = []
 for count, prop in enumerate(t_prop_l):
     train_idx = idx[0:round(len_data*prop)]
-    val_idx = idx[round(len_data*prop):]
+    # val_idx = idx[round(len_data*prop):]
 
     # calling constructor
     X_train, y_train = construct_data(train_idx)
-    X_test, y_test = construct_data(val_idx)
+    # X_test, y_test = construct_data(val_idx)
 
     # start gun
     t_start = time.time()
@@ -85,7 +85,7 @@ for count, prop in enumerate(t_prop_l):
 
     # fit model
     print('fitting model')
-    mod = model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs)
+    mod = model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs, validation_split = 0.5)
 
     mod_l.append(mod.history)
 
