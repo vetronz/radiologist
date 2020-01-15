@@ -85,7 +85,9 @@ for count, prop in enumerate(t_prop_l):
 
     # fit model
     print('fitting model')
-    mod = model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs, validation_split = 0.5)
+    
+    # mod = model.fit(X_train, y_train, batch_size=32, verbose=1, callbacks=callback_l, epochs=num_epochs, validation_data=(X_test, y_test))
+    mod = model.fit(X_train, y_train, batch_size=32, verbose=1, callbacks=callback_l, epochs=num_epochs, validation_split = 0.5)
 
     mod_l.append(mod.history)
 
