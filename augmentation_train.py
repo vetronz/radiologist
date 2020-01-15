@@ -85,6 +85,8 @@ callback_l = [checkpoint, monitor]
 new_size = 350
 aug_perm=10
 bs = 64
+num_epochs = 1
+
 # construct array 0 to length of num imgs
 len_data = 2500
 idx = np.arange(0, len_data)
