@@ -48,11 +48,6 @@ def construct_val(index_list):
     print(f'\n y shape:{y.shape}\n')
     return X, y
 
-pts_dynamic_abs = '/root/disp/pts_dynamic'
-rad_abs = '/root/radiologist'
-label_dict = np.load('label_dict.npy', allow_pickle='TRUE').item()
-os.chdir(pts_dynamic_abs)
-
 def define_model(reg_alpha, drop_perc):
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(3,3), activation='relu', activity_regularizer=regularizers.l2(reg_alpha), input_shape=(new_size, new_size, 1)))
@@ -68,6 +63,18 @@ def define_model(reg_alpha, drop_perc):
                 metrics=['accuracy'])
     return model
 
+datagen = ImageDataGenerator(
+    featurewise_center=False,
+    featurewise_std_normalization=False,
+    rotation_range=20,
+    width_shift_range=0.2,
+    height_shift_range=0.1,
+    horizontal_flip=True)
+    
+pts_dynamic_abs = '/root/disp/pts_dynamic'
+rad_abs = '/root/radiologist'
+label_dict = np.load('label_dict.npy', allow_pickle='TRUE').item()
+os.chdir(pts_dynamic_abs)
 
 checkpoint = ModelCheckpoint('/root/radiologist/dnn/weights_best.hdf5', monitor='val_loss', verbose=1, save_best_only=True, mode='max')
 
