@@ -83,7 +83,7 @@ num_epochs = 1
 mod_l = []
 for count, prop in enumerate(t_prop_l):
     model = define_model(0, 0)
-    train_sub = idx[0:round(len_train*prop)]
+    train_sub = idx[0:int(round(len_train*prop))]
 
     # calling constructor
     X_train, y_train = construct_data(train_sub)
