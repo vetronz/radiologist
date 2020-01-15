@@ -70,11 +70,6 @@ datagen = ImageDataGenerator(
     width_shift_range=0.2,
     height_shift_range=0.1,
     horizontal_flip=True)
-    
-pts_dynamic_abs = '/root/disp/pts_dynamic'
-rad_abs = '/root/radiologist'
-label_dict = np.load('label_dict.npy', allow_pickle='TRUE').item()
-os.chdir(pts_dynamic_abs)
 
 checkpoint = ModelCheckpoint('/root/radiologist/dnn/weights_best.hdf5', monitor='val_loss', verbose=1, save_best_only=True, mode='max')
 
@@ -82,13 +77,20 @@ monitor = EarlyStopping(monitor='val_loss', min_delta=1e-1, patience=2, verbose=
 
 callback_l = [checkpoint, monitor]
 
+    
+pts_dynamic_abs = '/root/disp/pts_dynamic'
+rad_abs = '/root/radiologist'
+label_dict = np.load('label_dict.npy', allow_pickle='TRUE').item()
+os.chdir(pts_dynamic_abs)
+
 new_size = 350
-aug_perm=10
+aug_perm=5
 bs = 64
 num_epochs = 1
 
 # construct array 0 to length of num imgs
-len_data = 5000
+# len_data = 5000
+len_data = pts_dynamic_abs
 idx = np.arange(0, len_data)
 
 # inplace shuffle
