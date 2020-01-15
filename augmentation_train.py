@@ -90,8 +90,8 @@ num_epochs = 1
 
 # construct array 0 to length of num imgs
 # len_data = 5000
-len_data = pts_dynamic_abs
-print(len_data)
+len_data = len(os.listdir(pts_dynamic_abs))
+print(f'number of pictures: {len_data}\n')
 time.sleep(2)
 print('gods speed')
 time.sleep(2)
