@@ -60,7 +60,9 @@ callback_l = [checkpoint, monitor]
 
 # data partitioning
 # t_prop = 0.8
-t_prop_l = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+l = np.arange(1,20)
+t_prop_l = [i*0.05 for i in l]
+# t_prop_l = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
 # construct array 0 to length of num imgs
 len_data = 2500
