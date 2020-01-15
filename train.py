@@ -35,7 +35,7 @@ os.chdir(pts_dynamic_abs)
 new_size = 350
 
 # model
-num_epochs = 5
+num_epochs = 1
 reg_alpha = 0.1
 drop_perc = 0.2
 NAME = "ct-CNN"
@@ -59,35 +59,41 @@ monitor = EarlyStopping(monitor='val_loss', min_delta=1e-1, patience=2, verbose=
 callback_l = [checkpoint, monitor]
 
 # data partitioning
-t_prop = 0.8
+# t_prop = 0.8
+t_prop_l = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+
 # construct array 0 to length of num imgs
-len_X = 35000
-idx = np.arange(0, len_X)
+len_data = 2500
+idx = np.arange(0, len_data)
 
 # inplace shuffle
 np.random.seed(42)
 np.random.shuffle(idx)
 
-train_idx = idx[0:round(len_X*t_prop)]
-val_idx = idx[round(len_X*t_prop):]
+mod_l = []
+for count, prop in enumerate(t_prop_l):
+    train_idx = idx[0:round(len_data*prop)]
+    val_idx = idx[round(len_data*prop):]
 
-# calling constructor
-X_train, y_train = construct_data(train_idx)
-X_test, y_test = construct_data(val_idx)
+    # calling constructor
+    X_train, y_train = construct_data(train_idx)
+    X_test, y_test = construct_data(val_idx)
 
-# start gun
-t_start = time.time()
-time.sleep(0.01)
+    # start gun
+    t_start = time.time()
+    time.sleep(0.01)
 
-# fit model
-print('fitting model')
-mod = model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs)
+    # fit model
+    print('fitting model')
+    mod = model.fit(X_train, y_train, batch_size=32, validation_data=(X_test, y_test), verbose=1, callbacks=callback_l, epochs=num_epochs)
 
-# calling time
-time.sleep(1)
-t_end = time.time()
-t_tot = t_end - t_start
-print(f'\ntotal time: {t_tot}')
+    mod_l.append(mod.history)
+
+    # calling time
+    time.sleep(1)
+    t_end = time.time()
+    t_tot = t_end - t_start
+    print(f'\ntotal time: {t_tot}')
 
 dnn_dir = '/root/radiologist/dnn'
 os.chdir(dnn_dir)
@@ -98,6 +104,6 @@ model.save('batch_mod.h5')
 
 os.chdir(rad_abs)
 with open('hist_dict.pkl', 'wb') as f:
-    pickle.dump(mod.history, f)
+    pickle.dump(mod_l, f)
 # with open('hist_dict.pkl', 'rb') as f:
 #     pickle.load(f)
